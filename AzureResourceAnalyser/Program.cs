@@ -1,12 +1,17 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using AzureResourceAnalyser.Services;
+﻿using AzureResourceAnalyser.Services;
 
 var service = new AzureResourceService();
+
 var subscriptions = await service.GetSubscriptionAsync();
 
 foreach (var sub in subscriptions)
 {
-    Console.WriteLine(sub.Data.DisplayName);
-    
+    Console.WriteLine($"Subscription: {sub.Data.DisplayName}");
+
+    var resourceGroups = await service.GetResourceGroupsAsync(sub);
+
+    foreach (var resourceGroup in resourceGroups)
+    {
+        Console.WriteLine($"  Resource Group: {resourceGroup.Data.Name}");
+    }
 }

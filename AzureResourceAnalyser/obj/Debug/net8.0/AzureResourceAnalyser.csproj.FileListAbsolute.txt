@@ -45,3 +45,4 @@ C:\Users\micha\Desktop\studia\Semestr_IV\AzureResourceAnalyser\AzureResourceAnal
 C:\Users\micha\Desktop\studia\Semestr_IV\AzureResourceAnalyser\AzureResourceAnalyser\obj\Debug\net8.0\AzureResourceAnalyser.pdb
 C:\Users\micha\Desktop\studia\Semestr_IV\AzureResourceAnalyser\AzureResourceAnalyser\obj\Debug\net8.0\AzureResourceAnalyser.genruntimeconfig.cache
 C:\Users\micha\Desktop\studia\Semestr_IV\AzureResourceAnalyser\AzureResourceAnalyser\obj\Debug\net8.0\ref\AzureResourceAnalyser.dll
+C:\Users\micha\Desktop\studia\Semestr_IV\AzureResourceAnalyser\AzureResourceAnalyser\obj\Debug\net8.0\AzureResourceAnalyser.sourcelink.json

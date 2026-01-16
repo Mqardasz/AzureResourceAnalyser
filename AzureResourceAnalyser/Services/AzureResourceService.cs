@@ -14,6 +14,8 @@ public class AzureResourceService
         _armClient = new ArmClient(credential);
     }
 
+    
+    // POBRANIE SUBSKRYPCJI
     public async Task<List<SubscriptionResource>> GetSubscriptionAsync()
     {
         var subscriptions = new List<SubscriptionResource>();
@@ -24,5 +26,20 @@ public class AzureResourceService
         return subscriptions;
             
     }
+    
+    public async Task<List<ResourceGroupResource>> GetResourceGroupsAsync(
+        SubscriptionResource subscription)
+    {
+        var resourceGroups = new List<ResourceGroupResource>();
+
+        await foreach (var rg in subscription.GetResourceGroups().GetAllAsync())
+        {
+            resourceGroups.Add(rg);
+        }
+
+        return resourceGroups;
+    }
+    
+    
     
 }
