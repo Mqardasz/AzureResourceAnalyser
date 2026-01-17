@@ -6,11 +6,12 @@ public class SshRule : IComplianceRule
 {
     public bool IsCompliant(AzureResource resource, out string issue)
     {
-        issue = null;
+        issue = string.Empty;
 
         if (resource is VirtualMachineResource vm)
         {
-            if (vm.OperatingSystem == "Linux" && !vm.Status.Contains("SSH", StringComparison.OrdinalIgnoreCase))
+            if (vm.OperatingSystem == "Linux" && !string.IsNullOrEmpty(vm.Status) && 
+                !vm.Status.Contains("SSH", StringComparison.OrdinalIgnoreCase))
             {
                 issue = "Maszyna wirtualna Linux ma problemy z dostępnością SSH.";
                 return false;
