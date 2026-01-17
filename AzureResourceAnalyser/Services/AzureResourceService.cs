@@ -5,6 +5,7 @@ using Azure.ResourceManager.Resources.Models;
 using Azure.Identity;
 using Azure.ResourceManager;
 using Azure.ResourceManager.Resources;
+using AzureResourceAnalyser.Utils;
 
 public class AzureResourceService
 {
@@ -12,8 +13,17 @@ public class AzureResourceService
 
     public AzureResourceService()
     {
-        var credential = new DefaultAzureCredential();
-        _armClient = new ArmClient(credential);
+        try
+        {
+            var credential = new DefaultAzureCredential();
+            _armClient = new ArmClient(credential);
+            Logger.LogInfo("Połączono z Azure przy użyciu DefaultAzureCredential");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"Błąd podczas uwierzytelniania: {ex.Message}");
+            throw;
+        }
     }
 
     
@@ -21,9 +31,17 @@ public class AzureResourceService
     public async Task<List<SubscriptionResource>> GetSubscriptionAsync()
     {
         var subscriptions = new List<SubscriptionResource>();
-        await foreach (var sub in _armClient.GetSubscriptions().GetAllAsync())
+        try
         {
-            subscriptions.Add(sub);
+            await foreach (var sub in _armClient.GetSubscriptions().GetAllAsync())
+            {
+                subscriptions.Add(sub);
+                Logger.LogInfo($"Znaleziono subskrypcję: {sub.Data.DisplayName} (ID: {sub.Data.SubscriptionId})");
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"Błąd podczas pobierania subskrypcji: {ex.Message}");
         }
         return subscriptions;
             
@@ -34,9 +52,17 @@ public class AzureResourceService
     {
         var resourceGroups = new List<ResourceGroupResource>();
 
-        await foreach (var rg in subscription.GetResourceGroups().GetAllAsync())
+        try
         {
-            resourceGroups.Add(rg);
+            await foreach (var rg in subscription.GetResourceGroups().GetAllAsync())
+            {
+                resourceGroups.Add(rg);
+                Logger.LogDebug($"  Grupa zasobów: {rg.Data.Name}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"Błąd podczas pobierania grup zasobów: {ex.Message}");
         }
 
         return resourceGroups;
@@ -46,38 +72,107 @@ public class AzureResourceService
     {
         var resources = new List<AzureResource>();
 
-        await foreach (var genericResource in resourceGroup.GetGenericResourcesAsync())
+        try
         {
-            AzureResource azureResource = null;
+            await foreach (var genericResource in resourceGroup.GetGenericResourcesAsync())
+            {
+                AzureResource? azureResource = null;
 
-            // Sprawdź typ zasobu i rzutuj na odpowiednią klasę dziedziczącą AzureResource
-            if (genericResource.Data.ResourceType.Type.Contains("virtualMachines", StringComparison.OrdinalIgnoreCase))
-            {
-                azureResource = new VirtualMachineResource
+                // Konwersja tagów do Dictionary
+                var tags = new Dictionary<string, string>();
+                if (genericResource.Data.Tags != null)
                 {
-                    Name = genericResource.Data.Name,
-                    ResourceType = genericResource.Data.ResourceType.Type,
-                    ResourceGroup = resourceGroup.Data.Name,
-                    Location = genericResource.Data.Location
-                };
-            }
-            else if (genericResource.Data.ResourceType.Type.Contains("disks", StringComparison.OrdinalIgnoreCase))
-            {
-                azureResource = new DiskResource
+                    foreach (var tag in genericResource.Data.Tags)
+                    {
+                        tags[tag.Key] = tag.Value;
+                    }
+                }
+
+                // Sprawdź typ zasobu i rzutuj na odpowiednią klasę
+                if (genericResource.Data.ResourceType.Type.Contains("virtualMachines", StringComparison.OrdinalIgnoreCase) &&
+                    !genericResource.Data.ResourceType.Type.Contains("extensions", StringComparison.OrdinalIgnoreCase))
                 {
-                    Name = genericResource.Data.Name,
-                    ResourceType = genericResource.Data.ResourceType.Type,
-                    ResourceGroup = resourceGroup.Data.Name,
-                    Location = genericResource.Data.Location,
-                    PerformanceTier = genericResource.Data.Sku?.Name,
-                };
+                    azureResource = new VirtualMachineResource
+                    {
+                        Name = genericResource.Data.Name,
+                        ResourceType = genericResource.Data.ResourceType.Type,
+                        ResourceGroup = resourceGroup.Data.Name,
+                        Location = genericResource.Data.Location.ToString(),
+                        Tags = tags,
+                        Size = genericResource.Data.Sku?.Name
+                    };
+                    Logger.LogDebug($"    Zasób VM: {genericResource.Data.Name}");
+                }
+                else if (genericResource.Data.ResourceType.Type.Contains("disks", StringComparison.OrdinalIgnoreCase))
+                {
+                    azureResource = new DiskResource
+                    {
+                        Name = genericResource.Data.Name,
+                        ResourceType = genericResource.Data.ResourceType.Type,
+                        ResourceGroup = resourceGroup.Data.Name,
+                        Location = genericResource.Data.Location.ToString(),
+                        Tags = tags,
+                        PerformanceTier = genericResource.Data.Sku?.Name,
+                    };
+                    Logger.LogDebug($"    Zasób Disk: {genericResource.Data.Name}");
+                }
+                else if (genericResource.Data.ResourceType.Type.Contains("storageAccounts", StringComparison.OrdinalIgnoreCase))
+                {
+                    azureResource = new StorageAccountResource
+                    {
+                        Name = genericResource.Data.Name,
+                        ResourceType = genericResource.Data.ResourceType.Type,
+                        ResourceGroup = resourceGroup.Data.Name,
+                        Location = genericResource.Data.Location.ToString(),
+                        Tags = tags,
+                        Sku = genericResource.Data.Sku?.Name,
+                        Kind = genericResource.Data.Kind,
+                        EncryptionEnabled = true // Domyślnie w Azure szyfrowanie jest włączone
+                    };
+                    Logger.LogDebug($"    Zasób Storage: {genericResource.Data.Name}");
+                }
+                else if (genericResource.Data.ResourceType.Type.Contains("sites", StringComparison.OrdinalIgnoreCase))
+                {
+                    azureResource = new AppServiceResource
+                    {
+                        Name = genericResource.Data.Name,
+                        ResourceType = genericResource.Data.ResourceType.Type,
+                        ResourceGroup = resourceGroup.Data.Name,
+                        Location = genericResource.Data.Location.ToString(),
+                        Tags = tags,
+                        Sku = genericResource.Data.Sku?.Name,
+                        Kind = genericResource.Data.Kind
+                    };
+                    Logger.LogDebug($"    Zasób App Service: {genericResource.Data.Name}");
+                }
+                else if (genericResource.Data.ResourceType.Type.Contains("servers/databases", StringComparison.OrdinalIgnoreCase))
+                {
+                    azureResource = new DatabaseResource
+                    {
+                        Name = genericResource.Data.Name,
+                        ResourceType = genericResource.Data.ResourceType.Type,
+                        ResourceGroup = resourceGroup.Data.Name,
+                        Location = genericResource.Data.Location.ToString(),
+                        Tags = tags,
+                        Sku = genericResource.Data.Sku?.Name
+                    };
+                    Logger.LogDebug($"    Zasób Database: {genericResource.Data.Name}");
+                }
+                else
+                {
+                    Logger.LogDebug($"    [SKIP] Nieznany typ zasobu: {genericResource.Data.ResourceType.Type}");
+                    continue;
+                }
+                
+                if (azureResource != null)
+                {
+                    resources.Add(azureResource);
+                }
             }
-            else
-            {
-                Console.WriteLine($"[SKIP] Unknown resource type: {genericResource.Data.ResourceType.Type}");
-                continue;
-            }
-            resources.Add(azureResource);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"Błąd podczas pobierania zasobów z grupy {resourceGroup.Data.Name}: {ex.Message}");
         }
 
         return resources;

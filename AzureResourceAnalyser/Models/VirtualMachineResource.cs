@@ -2,9 +2,8 @@
 
 public class VirtualMachineResource : AzureResource
 {
-    public String ImageName { get; set; }
-    public String Size { get; set; }
-    public String Location {get; set;}
-    public String Status {get; set;}
-    public String OperatingSystem { get; set; }
+    public string? ImageName { get; set; }
+    public string? Size { get; set; }
+    public string? Status { get; set; }
+    public string? OperatingSystem { get; set; }
 }

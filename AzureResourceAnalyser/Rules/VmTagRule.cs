@@ -6,13 +6,14 @@ public class VmTagRule : IComplianceRule
 {
     public bool IsCompliant(AzureResource resource, out string issue)
     {
-        issue = null;
+        issue = string.Empty;
 
         if (resource is VirtualMachineResource vm)
         {
-            if (string.IsNullOrEmpty(vm.Name) || vm.Size == null)
+            // Sprawdzanie czy VM ma wymagany tag "env"
+            if (!vm.Tags.ContainsKey("env") || string.IsNullOrEmpty(vm.Tags["env"]))
             {
-                issue = "Brak wymaganych tagów dla maszyny wirtualnej.";
+                issue = "Maszyna wirtualna nie ma wymaganego tagu 'env'.";
                 return false;
             }
         }

@@ -6,13 +6,13 @@ public class DiskSizeRule : IComplianceRule
 {
     public bool IsCompliant(AzureResource resource, out string issue)
     {
-        issue = null;
+        issue = string.Empty;
 
-        if (resource is DiskResource storageAccountResource)
+        if (resource is DiskResource diskResource)
         {
-            if (storageAccountResource.PerformanceTier == "Standard LRS")
+            if (diskResource.PerformanceTier == "Standard_LRS")
             {
-                issue = $"Dysk ma niezgodny performancetier: {storageAccountResource.PerformanceTier}";
+                issue = $"Dysk ma niezgodny typ wydajności: {diskResource.PerformanceTier}";
                 return false;
             }
         }
