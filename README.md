@@ -82,13 +82,21 @@ Aplikacja automatycznie pobiera następujące typy zasobów:
 
 ### 2. Reguły zgodności
 
-Domyślnie zaimplementowane reguły:
+Domyślnie zaimplementowane i aktywne reguły:
 
 - **VmTagRule** - sprawdza czy maszyna wirtualna ma wymagany tag "env"
 - **VmSizeRule** - wykrywa przestarzałe rozmiary VM (Basic_A*, Standard_A0-A4)
 - **DiskSizeRule** - sprawdza typ wydajności dysków (Standard_LRS)
 - **StorageEncryptionRule** - weryfikuje czy storage ma włączone szyfrowanie
 - **SshRule** - sprawdza dostępność SSH dla maszyn Linux
+
+Dodatkowe reguły (opcjonalne, można włączyć w RuleManager):
+
+- **BillingTagRule** - sprawdza obecność tagów rozliczeniowych (CostCenter, Project, Owner)
+- **LocationRule** - weryfikuje czy zasoby są w dozwolonych regionach Azure
+- **NamingConventionRule** - sprawdza konwencję nazewnictwa zasobów (format: [typ]-[env]-[nazwa]-[numer])
+
+Aby włączyć opcjonalne reguły, odkomentuj odpowiednie linie w klasie `RuleManager.cs`.
 
 ### 3. Dynamiczne dodawanie reguł
 
@@ -178,12 +186,15 @@ AzureResourceAnalyser/
 │   ├── IResourceAnalyser.cs
 │   └── ResourceAnalyser.cs     # Główny analizator zasobów
 ├── Rules/                       # Reguły zgodności
-│   ├── IComplianceRule.cs
-│   ├── VmTagRule.cs
-│   ├── VmSizeRule.cs
-│   ├── DiskSizeRule.cs
-│   ├── StorageEncryptionRule.cs
-│   └── SshRule.cs
+│   ├── IComplianceRule.cs      # Interfejs reguły
+│   ├── VmTagRule.cs            # Sprawdzanie tagów VM
+│   ├── VmSizeRule.cs           # Wykrywanie starych rozmiarów VM
+│   ├── DiskSizeRule.cs         # Sprawdzanie wydajności dysków
+│   ├── StorageEncryptionRule.cs # Weryfikacja szyfrowania
+│   ├── SshRule.cs              # Sprawdzanie SSH dla Linux
+│   ├── BillingTagRule.cs       # Tagi rozliczeniowe (opcjonalna)
+│   ├── LocationRule.cs         # Dozwolone regiony (opcjonalna)
+│   └── NamingConventionRule.cs # Konwencja nazw (opcjonalna)
 ├── Reporting/                   # Generowanie raportów
 │   ├── JsonReportWriter.cs
 │   └── PrometheusExporter.cs
