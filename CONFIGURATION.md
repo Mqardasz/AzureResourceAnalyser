@@ -174,7 +174,7 @@ jobs:
 ### Azure DevOps Pipeline
 ```yaml
 trigger:
-  - main
+- main
 
 schedules:
 - cron: "0 0 * * *"
