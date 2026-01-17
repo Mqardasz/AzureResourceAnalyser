@@ -2,17 +2,17 @@
 
 namespace AzureResourceAnalyser.Rules;
 
-public class VmTagRule : IComplianceRule
+public class DiskSizeRule : IComplianceRule
 {
     public bool IsCompliant(AzureResource resource, out string issue)
     {
         issue = null;
 
-        if (resource is VirtualMachineResource vm)
+        if (resource is DiskResource storageAccountResource)
         {
-            if (string.IsNullOrEmpty(vm.Name) || vm.Size == null)
+            if (storageAccountResource.PerformanceTier == "Standard LRS")
             {
-                issue = "Brak wymaganych tagów dla maszyny wirtualnej.";
+                issue = $"Dysk ma niezgodny performancetier: {storageAccountResource.PerformanceTier}";
                 return false;
             }
         }

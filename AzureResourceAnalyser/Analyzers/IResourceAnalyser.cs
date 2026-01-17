@@ -5,5 +5,5 @@ namespace AzureResourceAnalyser.Analyzers;
 
 public interface IResourceAnalyser
 {
-    public void Analyze(AzureResource resource, IEnumerable<IComplianceRule> rules);
+    public AnalysisResult Analyze(AzureResource resource, IEnumerable<IComplianceRule> rules);
 }
