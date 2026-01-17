@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AzureResourceAnalyser")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0bb1b3dbc283c420470172dab2c133f5b6f902b5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b03777c447bc065ac6d62b97fbc5e30eed56d3ee")]
 [assembly: System.Reflection.AssemblyProductAttribute("AzureResourceAnalyser")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AzureResourceAnalyser")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

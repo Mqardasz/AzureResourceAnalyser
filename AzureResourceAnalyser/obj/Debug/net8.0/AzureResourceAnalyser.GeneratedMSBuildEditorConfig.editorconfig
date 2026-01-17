@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = AzureResourceAnalyser
-build_property.ProjectDir = C:\Users\micha\Desktop\studia\Semestr_IV\AzureResourceAnalyser\AzureResourceAnalyser\
+build_property.ProjectDir = /home/runner/work/AzureResourceAnalyser/AzureResourceAnalyser/AzureResourceAnalyser/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

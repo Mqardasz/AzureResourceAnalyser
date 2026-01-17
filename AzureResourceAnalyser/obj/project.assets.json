@@ -1409,19 +1409,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\micha\\.nuget\\packages\\": {}
+    "/home/runner/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\micha\\Desktop\\studia\\Semestr_IV\\AzureResourceAnalyser\\AzureResourceAnalyser\\AzureResourceAnalyser.csproj",
+      "projectUniqueName": "/home/runner/work/AzureResourceAnalyser/AzureResourceAnalyser/AzureResourceAnalyser/AzureResourceAnalyser.csproj",
       "projectName": "AzureResourceAnalyser",
-      "projectPath": "C:\\Users\\micha\\Desktop\\studia\\Semestr_IV\\AzureResourceAnalyser\\AzureResourceAnalyser\\AzureResourceAnalyser.csproj",
-      "packagesPath": "C:\\Users\\micha\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\micha\\Desktop\\studia\\Semestr_IV\\AzureResourceAnalyser\\AzureResourceAnalyser\\obj\\",
+      "projectPath": "/home/runner/work/AzureResourceAnalyser/AzureResourceAnalyser/AzureResourceAnalyser/AzureResourceAnalyser.csproj",
+      "packagesPath": "/home/runner/.nuget/packages/",
+      "outputPath": "/home/runner/work/AzureResourceAnalyser/AzureResourceAnalyser/AzureResourceAnalyser/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\micha\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/home/runner/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -1491,7 +1491,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.416/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
