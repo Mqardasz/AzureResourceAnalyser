@@ -4,6 +4,7 @@ namespace AzureResourceAnalyser.Rules;
 
 public class VmSizeRule : IComplianceRule
 {
+    // tu jest zbiór niedozwolonych rozmiarów
     private readonly HashSet<string> _deprecatedSizes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
         "Basic_A0", "Basic_A1", "Basic_A2", "Basic_A3", "Basic_A4",

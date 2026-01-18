@@ -9,15 +9,17 @@ using AzureResourceAnalyser.Utils;
 
 public class AzureResourceService
 {
+    // glowna klasa ARM - uwierzytelnia sie do azure, daje dostep do rg, subskrypcji i serwisow
     private readonly ArmClient _armClient;
 
+    // uwierzytelnienie sie do azure
     public AzureResourceService()
     {
         try
         {
             var credential = new DefaultAzureCredential();
             _armClient = new ArmClient(credential);
-            Logger.LogInfo("Połączono z Azure przy użyciu DefaultAzureCredential");
+            Logger.LogInfo($"Połączono z Azure przy użyciu {credential}");
         }
         catch (Exception ex)
         {
@@ -47,6 +49,7 @@ public class AzureResourceService
             
     }
     
+    // POBRANIE RESOURCE GROUPS
     public async Task<List<ResourceGroupResource>> GetResourceGroupsAsync(
         SubscriptionResource subscription)
     {
@@ -68,6 +71,7 @@ public class AzureResourceService
         return resourceGroups;
     }
     
+    // POBRANIE ZASOBÓW Z RG
     public async Task<List<AzureResource>> GetResourcesAsync(ResourceGroupResource resourceGroup)
     {
         var resources = new List<AzureResource>();
@@ -103,6 +107,7 @@ public class AzureResourceService
                     };
                     Logger.LogDebug($"    Zasób VM: {genericResource.Data.Name}");
                 }
+                // DYSK
                 else if (genericResource.Data.ResourceType.Type.Contains("disks", StringComparison.OrdinalIgnoreCase))
                 {
                     azureResource = new DiskResource
@@ -116,6 +121,7 @@ public class AzureResourceService
                     };
                     Logger.LogDebug($"    Zasób Disk: {genericResource.Data.Name}");
                 }
+                // STORAGE ACCOUNT
                 else if (genericResource.Data.ResourceType.Type.Contains("storageAccounts", StringComparison.OrdinalIgnoreCase))
                 {
                     azureResource = new StorageAccountResource

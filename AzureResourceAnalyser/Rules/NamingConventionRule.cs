@@ -25,7 +25,7 @@ public class NamingConventionRule : IComplianceRule
 
         if (string.IsNullOrEmpty(resource.Name))
         {
-            return true; // Skip if no name
+            return true; // jesli nie ma nazwy pomin
         }
 
         var parts = resource.Name.ToLowerInvariant().Split('-');

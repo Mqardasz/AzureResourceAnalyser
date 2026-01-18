@@ -7,8 +7,10 @@ namespace AzureResourceAnalyser.Rules;
 /// </summary>
 public class LocationRule : IComplianceRule
 {
+    // lista dozwolonych regionów
     private readonly HashSet<string> _allowedLocations = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
+        "polandcentral",
         "westeurope",
         "northeurope", 
         "eastus",

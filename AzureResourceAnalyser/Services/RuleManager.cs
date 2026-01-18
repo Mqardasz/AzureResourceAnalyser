@@ -21,13 +21,11 @@ public class RuleManager
         _rules.Add(new DiskSizeRule());
         _rules.Add(new StorageEncryptionRule());
         
-        // Opcjonalne reguły - odkomentuj aby włączyć:
-        
         // Sprawdzanie tagów rozliczeniowych (CostCenter, Project, Owner)
         // _rules.Add(new BillingTagRule());
         
         // Sprawdzanie dozwolonych regionów Azure
-        // _rules.Add(new LocationRule());
+        _rules.Add(new LocationRule());
         
         // Sprawdzanie konwencji nazewnictwa zasobów
         // _rules.Add(new NamingConventionRule());
