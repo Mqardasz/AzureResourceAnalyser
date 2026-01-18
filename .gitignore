@@ -39,3 +39,6 @@ analysis_report*.json
 prometheus_metrics*.txt
 reports/
 reports_archive/
+
+# UML diagrams
+diagrams/
