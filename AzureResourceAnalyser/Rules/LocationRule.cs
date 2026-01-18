@@ -14,7 +14,8 @@ public class LocationRule : IComplianceRule
         "westeurope",
         "northeurope", 
         "eastus",
-        "westus"
+        "westus",
+        "uksouth"
     };
 
     public bool IsCompliant(AzureResource resource, out string issue)

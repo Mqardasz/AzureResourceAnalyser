@@ -77,9 +77,8 @@ try
     
     string jsonReportPath = "analysis_report.json";
     await jsonReportWriter.WriteReportAsync(analysisResults, jsonReportPath);
-
-    string prometheusMetricsPath = "prometheus_metrics.txt";
-    await prometheusExporter.ExportMetricsAsync(analysisResults, prometheusMetricsPath);
+    
+    await prometheusExporter.ExportMetricsAsync(analysisResults);
 
     Console.WriteLine();
 

@@ -7,6 +7,7 @@ namespace AzureResourceAnalyser.Rules;
 /// </summary>
 public class BillingTagRule : IComplianceRule
 {
+    // zgodnie z konwencją - prywatne pola sa camelCase i zaczynaja sie od '_'
     private readonly string[] _requiredTags = { "CostCenter", "Project", "Owner" };
 
     public bool IsCompliant(AzureResource resource, out string issue)

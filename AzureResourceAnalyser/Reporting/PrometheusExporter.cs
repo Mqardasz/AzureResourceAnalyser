@@ -1,20 +1,26 @@
 ﻿using AzureResourceAnalyser.Models;
 using AzureResourceAnalyser.Utils;
+using Renci.SshNet; // NuGet: SSH.NET
+using System.Text;
 
 namespace AzureResourceAnalyser.Reporting;
 
 public class PrometheusExporter
 {
-    public async Task ExportMetricsAsync(List<AnalysisResult> results, string filePath)
+    private string _remoteHost = "20.108.25.162";
+    private string _username = "azureuser";
+    private string _remoteDir = "/var/lib/node_exporter/textfile_collector";
+    private string _remoteFileName = "azure_resources.prom";
+    private string _privateKeyPath = @"C:\Users\micha\.ssh\ssh-key.pem";
+    
+
+    public async Task ExportMetricsAsync(List<AnalysisResult> results)
     {
         try
         {
-            string projectDirectory = Directory.GetCurrentDirectory();
-            string outputFilePath = Path.Combine(projectDirectory, filePath);
-
             var metrics = new List<string>();
-            
-            // Generowanie metryk w formacie Prometheus
+
+            // Globalne metryki
             metrics.Add("# HELP azure_resources_total Total number of Azure resources");
             metrics.Add("# TYPE azure_resources_total gauge");
             metrics.Add($"azure_resources_total {results.Count}");
@@ -35,6 +41,7 @@ public class PrometheusExporter
             foreach (var group in resourcesByType)
             {
                 var sanitizedType = SanitizeMetricName(group.Key);
+
                 metrics.Add($"# HELP azure_resources_by_type_{sanitizedType} Number of resources of type {group.Key}");
                 metrics.Add($"# TYPE azure_resources_by_type_{sanitizedType} gauge");
                 metrics.Add($"azure_resources_by_type_{sanitizedType} {group.Count()}");
@@ -47,9 +54,25 @@ public class PrometheusExporter
                 metrics.Add("");
             }
 
-            // Zapisz metryki do pliku
-            await File.WriteAllLinesAsync(outputFilePath, metrics);
-            Logger.LogSuccess($"Metryki Prometheus zapisane: {outputFilePath}");
+            // Konwertuj listę metryk na string
+            var metricsText = string.Join("\n", metrics);
+
+            // Zapisz tymczasowo lokalnie
+            string tempFile = Path.Combine(Path.GetTempPath(), _remoteFileName);
+            await File.WriteAllTextAsync(tempFile, string.Join("\n", metrics), new UTF8Encoding(false));
+
+            // Wyślij plik przez SCP
+            using (var scp = new ScpClient(_remoteHost, _username, new PrivateKeyFile(_privateKeyPath)))
+            {
+                scp.Connect();
+                using (var fileStream = new FileStream(tempFile, FileMode.Open))
+                {
+                    scp.Upload(fileStream, $"{_remoteDir}/{_remoteFileName}");
+                }
+                scp.Disconnect();
+            }
+
+            Logger.LogSuccess($"Metryki Prometheus wysłane na serwer: {_remoteHost}:{_remoteDir}/{_remoteFileName}");
         }
         catch (Exception ex)
         {
@@ -59,7 +82,6 @@ public class PrometheusExporter
 
     private string SanitizeMetricName(string name)
     {
-        // Zamień niedozwolone znaki w nazwach metryk Prometheus
         return name.ToLower()
             .Replace("/", "_")
             .Replace(".", "_")
