@@ -151,12 +151,12 @@ Format zgodny z Prometheus/Grafana:
 
 ### 5. Logowanie
 
-Aplikacja wykorzystuje kolorowe logowanie konsolowe:
-- 🟢 **[INFO]** - informacje ogólne (zielony)
-- 🟡 **[WARNING]** - ostrzeżenia (żółty)
-- 🔴 **[ERROR]** - błędy (czerwony)
-- 🔵 **[SUCCESS]** - operacje zakończone sukcesem (cyjan)
-- ⚫ **[DEBUG]** - informacje debugowe (ciemnoszary)
+Aplikacja wykorzystuje logowanie w konsoli:
+-  **[INFO]** - general (zielony)
+-  **[WARNING]** - warning (żółty)
+-  **[ERROR]** - error (czerwony)
+-  **[SUCCESS]** - operacje zakończone sukcesem (cyjan)
+-  **[DEBUG]** - debug (szary)
 
 ### 6. Statystyki
 
@@ -261,16 +261,6 @@ Wskaźnik zgodności:        80.00%
 [SUCCESS] Analiza zakończona pomyślnie!
 ```
 
-## Cel edukacyjny
-
-Projekt został stworzony jako realizacja wymagań przedmiotu "Programowanie w środowisku Windows". 
-Demonstruje on:
-- Komunikację z chmurą Azure przez SDK
-- Wzorce projektowe (Strategy, Repository)
-- Serializację danych (JSON)
-- Logowanie i raportowanie
-- Architekturę wielowarstwową
-- Rozszerzalność przez interfejsy
 
 ## Diagram UML
 
