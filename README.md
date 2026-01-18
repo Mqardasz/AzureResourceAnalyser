@@ -272,9 +272,10 @@ Demonstruje on:
 - Architekturę wielowarstwową
 - Rozszerzalność przez interfejsy
 
-## Licencja
+## Diagram UML
 
-Projekt edukacyjny - do wykorzystania w celach nauki i prezentacji.
+![UML Class Diagram](Reporting.svg)
+
 
 ## Autor
 
